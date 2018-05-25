@@ -1,27 +1,15 @@
 import os
 
-from selenium.webdriver.support import expected_conditions
-
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from tests.pages.primary.component import Component
-from tests.pages.primary.components.photos.photo_overlay import PhotoComponent
 from tests.pages.primary.page import Page
-
-from util import config
 
 
 class PhotoPage(Page):
-    LOAD_END_MARKER_XPATH = '//li[@id="uploadingCompleteMsg"]/span/div'
-    PHOTO = '//a[@class="card_wrp"]'
-
-    PHOTOS_BUTTON_XPATH = '//a[@data-l="t,userPhotos"]'
-
-    PHOTO_INPUT_LOAD_XPATH = '//input[@type="file"][@name="photo"]'
-
     def goto_photo_comment(self):
         self.redirect('kadyr.akhmatov/pphotos/839046221380')
         progress_roll = '.photo-layer_process'
@@ -38,23 +26,6 @@ class PhotoPage(Page):
     @property
     def input_comment(self):
         return InputComment(self.driver)
-
-    def goto(self):
-        WebDriverWait(self.driver, config.WAITING_TIME_LONG, 0.1).until(
-            expected_conditions.presence_of_element_located((By.XPATH, self.PHOTOS_BUTTON_XPATH)))
-        self.driver.find_element_by_xpath(self.PHOTOS_BUTTON_XPATH).click()
-
-    def get_photo(self):
-        return PhotoComponent(self.driver)
-
-    def load(self):
-        WebDriverWait(self.driver, config.WAITING_TIME_LONG, 0.1).until(
-            expected_conditions.presence_of_element_located((By.XPATH, self.PHOTO_INPUT_LOAD_XPATH)))
-        self.driver.find_element_by_xpath(self.PHOTO_INPUT_LOAD_XPATH)\
-            .send_keys(os.path.join(os.getcwd(), 'tests/photos/test_photo.jpg'))
-        WebDriverWait(self.driver, config.WAITING_TIME_LONG, 0.1).until(
-            expected_conditions.text_to_be_present_in_element(
-                (By.XPATH, self.LOAD_END_MARKER_XPATH), 'Загружено 1 фото'))
 
 
 class Comments(Component):
